@@ -69,12 +69,10 @@ a {
 .site-bg {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background-image: url('../assets/images/bg-desk.GIF');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    object-fit: cover; /* Faz o vídeo agir como background-size: cover */
     z-index: -1;
     opacity: 0.8;
+    pointer-events: none;
 }
 
 /* NAVBAR */
