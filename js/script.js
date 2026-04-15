@@ -200,6 +200,76 @@ document.addEventListener('DOMContentLoaded', () => {
     bindCustomCursorHovers();
 });
 
+// --- CONTACT FORM --- //
+(function initContactForm() {
+    const EDGE_URL = 'https://nwrupmfqjujcvmahyetc.supabase.co/functions/v1/send-contact-email';
+
+    function setupContactForm() {
+        const form = document.getElementById('contact-form');
+        if (!form) return;
+
+        const submitBtn  = document.getElementById('contact-submit');
+        const feedback   = document.getElementById('contact-feedback');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name    = form.name.value.trim();
+            const email   = form.email.value.trim();
+            const message = form.message.value.trim();
+
+            feedback.textContent = '';
+            feedback.className = 'contact-feedback';
+
+            if (!name || !email || !message) {
+                feedback.textContent = 'Preencha todos os campos.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'ENVIANDO…';
+
+            try {
+                const ANON_KEY = 'sb_publishable_6JT7oulx7UetGz8XN_z30A_yqb-6FJ7';
+                const res = await fetch(EDGE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': ANON_KEY,
+                        'Authorization': `Bearer ${ANON_KEY}`,
+                    },
+                    body: JSON.stringify({ name, email, message }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    throw new Error(data.error || 'Erro desconhecido.');
+                }
+
+                feedback.textContent = 'Mensagem enviada! Em breve entro em contato.';
+                feedback.classList.add('success');
+                form.reset();
+
+            } catch (err) {
+                feedback.textContent = err.message || 'Falha ao enviar. Tente novamente.';
+                feedback.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ENVIAR MENSAGEM ↗';
+            }
+        });
+    }
+
+    // The form is always in the DOM (not loaded dynamically), so init once.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupContactForm);
+    } else {
+        setupContactForm();
+    }
+})();
+
 // --- SUPABASE CLIENT --- //
 const _sb = window.supabase.createClient(
     'https://nwrupmfqjujcvmahyetc.supabase.co',
