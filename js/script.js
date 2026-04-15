@@ -231,14 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'ENVIANDO…';
 
             try {
-                const ANON_KEY = 'sb_publishable_6JT7oulx7UetGz8XN_z30A_yqb-6FJ7';
                 const res = await fetch(EDGE_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': ANON_KEY,
-                        'Authorization': `Bearer ${ANON_KEY}`,
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, message }),
                 });
 
